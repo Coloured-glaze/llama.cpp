@@ -45,8 +45,10 @@ jobs:
           cuda: ${{ inputs.cuda_version }}
           linux-local-args: 
             '["--toolkit"]'
+          non-cuda-sub-packages:
+            '[libcublas", "libcufft"]'
           method: network
-          sub-packages: '["nvcc", "libcublas-dev", "libcufft-dev", "libcurand-dev", "libcusparse-dev"]'
+          sub-packages: '["nvcc"]'
 
       - name: Install dependencies
         run: |
