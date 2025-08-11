@@ -48,7 +48,7 @@ jobs:
           non-cuda-sub-packages:
             '["libcublas", "libcufft"]'
           method: network
-          sub-packages: '["nvcc"]'
+          sub-packages: '["nvcc", "cudart", "thrust", "cublas"]'
 
       - name: Install dependencies
         run: |
