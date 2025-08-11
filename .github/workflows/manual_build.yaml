@@ -49,8 +49,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          apt update
-          apt install -y build-essential cmake git
+          sudo apt update
+          sudo apt install -y build-essential cmake git
 
       - name: Configure and build llama.cpp with CUDA
         run: |
