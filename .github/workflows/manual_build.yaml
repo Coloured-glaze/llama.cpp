@@ -13,6 +13,11 @@ on:
         default: '12.4.1'
         required: true
         type: string
+      cuda_arch:
+        description: 'CUDA arch 70,75 or 80'
+        default: '70,75,80,86'
+        required: true
+        type: string
       os_version:
         description: 'OS version: ubuntu-latest, ubuntu-22.04, etc.'
         default: 'ubuntu-22.04'
@@ -67,6 +72,7 @@ jobs:
             -DGGML_CUDA=ON \
             -DGGML_CUDA_F16=ON \
             -DGGML_CUDA_FA_ALL_QUANTS=ON \
+            -DCMAKE_CUDA_ARCHITECTURES=${{ inputs.cuda-arch }} \
             -DCMAKE_CUDA_COMPILER=$(which nvcc)
 
           cmake --build . --config Release -j$(nproc)
