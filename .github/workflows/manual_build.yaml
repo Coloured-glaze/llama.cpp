@@ -9,8 +9,8 @@ on:
         required: false
         type: string
       cuda_version:
-        description: 'CUDA version to use (e.g., 12.4)'
-        default: '12.4'
+        description: 'CUDA version to use (e.g., 12.4.1)'
+        default: '12.4.1'
         required: true
         type: string
       os_version:
@@ -29,17 +29,28 @@ jobs:
         with:
           ref: ${{ inputs.version }}
 
+
+      - name: Free up disk space
+        if: ${{ runner.os == 'Linux' }}
+        # https://github.com/easimon/maximize-build-space/blob/master/action.yml
+        # https://github.com/easimon/maximize-build-space/tree/test-report
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /opt/hostedtoolcache/CodeQL
+
       - name: Set up CUDA Toolkit
-        uses: Jimver/cuda-toolkit@v0.2.25
+        uses: Jimver/cuda-toolkit@v0.2.26
         with:
           cuda: ${{ inputs.cuda_version }}
+          linux-local-args: '["--toolkit"]'
           method: network
-          sub-packages: '["nvcc", "libcufft-dev", "libcurand-dev"]'
+          sub-packages: '["nvcc"]'
 
       - name: Install dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential cmake git
+          apt update
+          apt install -y build-essential cmake git
 
       - name: Configure and build llama.cpp with CUDA
         run: |
