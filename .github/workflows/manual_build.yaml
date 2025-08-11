@@ -43,15 +43,15 @@ jobs:
         uses: Jimver/cuda-toolkit@v0.2.26
         with:
           cuda: ${{ inputs.cuda_version }}
-          linux-local-args: '["--toolkit"]'
+          linux-local-args: 
+            '["--toolkit"]'
           method: network
-          sub-packages: '["nvcc"]'
+          sub-packages: '["nvcc", "libcublas-dev", "libcufft-dev", "libcurand-dev", "libcusparse-dev"]'
 
       - name: Install dependencies
         run: |
           sudo apt update
           sudo apt install -y build-essential cmake git curl libcurl4-openssl-dev
-          sudo apt install -y cuda-cublas-dev-* cuda-cufft-dev-* cuda-curand-dev-* cuda-cusparse-dev-*
 
       - name: Configure and build llama.cpp with CUDA
         run: |
