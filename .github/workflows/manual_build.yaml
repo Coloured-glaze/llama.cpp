@@ -15,7 +15,7 @@ on:
         type: string
       cuda_arch:
         description: 'CUDA arch 70,75 or 80'
-        default: '70,75,80,86'
+        default: '70;75;80;86'
         required: true
         type: string
       os_version:
