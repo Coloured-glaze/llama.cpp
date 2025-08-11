@@ -1,0 +1,68 @@
+name: Build llama.cpp with CUDA Backend
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Commit or tag to checkout'
+        default: 'main'
+        required: false
+        type: string
+      cuda_version:
+        description: 'CUDA version to use (e.g., 12.4)'
+        default: '12.4'
+        required: true
+        type: string
+      os_version:
+        description: 'OS version: ubuntu-latest, ubuntu-22.04, etc.'
+        default: 'ubuntu-22.04'
+        required: true
+        type: string
+
+jobs:
+  build_llama_cpp:
+    name: Build llama.cpp CUDA on ${{ inputs.os_version }}
+    runs-on: ${{ inputs.os_version }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.version }}
+
+      - name: Set up CUDA Toolkit
+        uses: Jimver/cuda-toolkit@v0.2.25
+        with:
+          cuda: ${{ inputs.cuda_version }}
+          method: network
+          sub-packages: '["nvcc", "libcufft-dev", "libcurand-dev"]'
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake git
+
+      - name: Configure and build llama.cpp with CUDA
+        run: |
+          cd ${{ github.workspace }}
+          rm -rf build
+          mkdir -p build
+          cd build
+
+          cmake .. \
+            -DGGML_RPC=ON \
+            -DGGML_CUDA=ON \
+            -DGGML_CUDA_F16=ON \
+            -DGGML_CUDA_FA_ALL_QUANTS=ON \
+            -DCMAKE_CUDA_COMPILER=$(which nvcc)
+
+          cmake --build . --config Release -j$(nproc)
+
+      - name: List built binaries
+        run: |
+          ls -lh build/bin/
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: llama-cpp-cuda-${{ inputs.cuda_version }}-${{ inputs.os_version }}
+          path: build/bin/
