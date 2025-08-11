@@ -46,7 +46,7 @@ jobs:
           linux-local-args: 
             '["--toolkit"]'
           non-cuda-sub-packages:
-            '[libcublas", "libcufft"]'
+            '[libcublas"]'
           method: network
           sub-packages: '["nvcc"]'
 
