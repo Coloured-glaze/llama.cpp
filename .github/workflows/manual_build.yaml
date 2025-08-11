@@ -50,7 +50,8 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt install -y build-essential cmake git libcurl4-openssl-dev 
+          sudo apt install -y build-essential cmake git curl libcurl4-openssl-dev
+          sudo apt install -y cuda-cublas-dev-* cuda-cufft-dev-* cuda-curand-dev-* cuda-cusparse-dev-*
 
       - name: Configure and build llama.cpp with CUDA
         run: |
